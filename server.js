@@ -40,6 +40,10 @@ function Movie(movieResultObj) {
   }  
 
 app.get('/movies', (request, response) => {
+  response.status(200).send('Hello World')
+ })
+
+app.get('/movies', (request, response) => {
   const city = request.query.city;
   const url = 'https://api.themoviedb.org/3/search/movie';
   const query = {
