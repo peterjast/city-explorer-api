@@ -39,7 +39,7 @@ function Movie(movieResultObj) {
     this.poster_path = movieResultObj.poster_path;
   }  
 
-app.get('/movies', (request, response) => {
+app.get('/', (request, response) => {
   response.status(200).send('Hello World')
  })
 
