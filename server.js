@@ -21,6 +21,10 @@ const PORT = process.env.PORT || 3002;
 const getWeather = require('./components/weather');
 const getMovies = require('./components/movie');
 
+app.get('/', function(request,response) {
+  response.send('Hello World')
+});
+
 app.get('/weather', getWeather);
 
 app.get('/movies', getMovies);
