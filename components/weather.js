@@ -1,32 +1,59 @@
 'use strict';
 
+let cache = require('./cache.js');
+
 const superagent = require('superagent');
 
-function Forecast(weatherDataObj) {
-    this.description = `Low of ${weatherDataObj.low_temp}, high of ${weatherDataObj.high_temp} with ${weatherDataObj.weather.description.toLowerCase()}`;
-    this.date = weatherDataObj.datetime;
-}
-
 function getWeather(request, response) {
-    const lat = request.query.lat;
-    const lon = request.query.lon;
-    const url = 'https://api.weatherbit.io/v2.0/forecast/daily';
-    const query = {
+  const lat = request.query.lat;
+  const lon = request.query.lon;
+  const key = `weather-${lat}-${lon}`;
+  const url = 'http://api.weatherbit.io/v2.0/forecast/daily';
+  const query = {
+    key: process.env.WEATHER_API_KEY,
     lat: lat,
     lon: lon,
-    key: process.env.WEATHER_API_KEY
-    }
+    days: 16
+  };
 
-    superagent
-        .get(url)
-        .query(query)
-        .then(superagentResults => {
-        // console.log('data:', superagentResults.body.data);
-        const weatherObjArray = superagentResults.body.data.map(agent => new Forecast(agent));
-        // console.log(weatherObjArray);
-        response.status(200).send(weatherObjArray);
-        })
-};
+  if (cache[key] && (Date.now() - cache[key].timestamp < 300000)) {
+    console.log('Cache hit:', cache[key].data);
+    response.status(200).send(cache[key].data)
+  } else {
+    console.log('Cache miss');
+    cache[key] = {};
+    cache[key].timestamp = Date.now();
+
+    superagent.get(url)
+    .query(query)
+    .then(superagentResults => {
+        const weatherSummaries = parseWeather(superagentResults.body);
+        weatherSummaries.then( value => {  
+            cache[key].data = value;    
+            response.status(200).send(cache[key].data);
+        });
+    })
+  }
+  
+  return cache[key].data;
+}
+
+function parseWeather(weatherData) {
+  try {
+    const weatherSummaries = weatherData.data.map(day => { 
+      return new Weather(day);
+    });
+    return Promise.resolve(weatherSummaries);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+}
+
+class Weather {
+  constructor(day) {
+    this.description = `Low of ${day.low_temp}, high of ${day.high_temp} with ${day.weather.description.toLowerCase()}`;
+    this.date = day.datetime;
+  }
+}
 
 module.exports = getWeather;
-  

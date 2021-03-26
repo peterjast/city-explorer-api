@@ -1,7 +1,7 @@
 # city-explorer-backend
 
 **Author**: Peter Staker
-**Version**: 1.1.1
+**Version**: 1.0.4
 
 ## Overview
 
@@ -39,6 +39,7 @@ Web Request Response Cycle Diagram made with [Jacob Holmer](https://github.com/P
 03-24-2021 7:49pm - Application makes API calls to movie and weather APIs, then sends data to frontend
 03-25-2021 7:33pm - Requests movie and weather data from API and sends results to frontend.
 03-26-2021 2:23pm - Refactoring and modulization.
+03-27-2021 4:02pm - Added local memory db - cache.
 
 ## Credit and Collaborations
 
@@ -122,10 +123,22 @@ Actual time needed to complete: 2 hours
 
 Name of feature: Refactoring
 
-Estimate of time needed to complete: 2 hour
+Estimate of time needed to complete: 2 hours
 
 Start time: 12pm
 
 Finish time: 2:18pm
 
 Actual time needed to complete: 2.3 hours
+
+***
+
+Name of feature: Performance - adding local memory db (cache)
+
+Estimate of time needed to complete: 2 hours
+
+Start time: 1pm
+
+Finish time: 4:02pm
+
+Actual time needed to complete: 3 hours
